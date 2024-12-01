@@ -3,7 +3,7 @@ work day part:
 lint:
 	cargo clippy
 test day part:
-	cargo test -p {{day}} {{part}}
+	cargo test -p {{day}} -- --nocapture {{part}}
 dhat day part:
 	cargo run --profile dhat --features dhat-heap -- --day {{day}} --part {{part}}
 generate day:
