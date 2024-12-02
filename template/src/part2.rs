@@ -1,12 +1,12 @@
 #[tracing::instrument(level = "trace", skip())]
 pub fn run() -> String {
     let input = include_str!("input.txt");
-    process(String::from(input))
+    process(input).to_string()
 }
 
 #[tracing::instrument(level = "trace", skip(input))]
-fn process(input: String) -> String {
-    input
+fn process(input: &str) -> usize {
+    input.parse().unwrap()
 }
 
 #[cfg(test)]
@@ -15,7 +15,7 @@ mod tests {
 
     #[test]
     fn it_works() {
-        let result = process(String::from("it works!"));
-        assert_eq!(result, String::from("it works!"));
+        let result = process("0");
+        assert_eq!(result, 0);
     }
 }
