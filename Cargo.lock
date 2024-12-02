@@ -23,6 +23,7 @@ version = "0.1.0"
 dependencies = [
  "clap",
  "day-01",
+ "day-02",
  "dhat",
  "tracing",
  "tracing-subscriber",
@@ -183,6 +184,13 @@ name = "day-01"
 version = "0.1.0"
 dependencies = [
  "divan",
+ "tracing",
+]
+
+[[package]]
+name = "day-02"
+version = "0.1.0"
+dependencies = [
  "tracing",
 ]
 
