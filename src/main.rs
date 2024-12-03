@@ -29,6 +29,8 @@ fn main() {
         ("day-01", 2) => day_01::part2::run(),
         ("day-02", 1) => day_02::part1::run(),
         ("day-02", 2) => day_02::part2::run(),
+        ("day-03", 1) => day_03::part1::run(),
+        ("day-03", 2) => day_03::part2::run(),
         _ => String::from("Unimplemented"),
     };
 
