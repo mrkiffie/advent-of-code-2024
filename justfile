@@ -11,4 +11,5 @@ bench day:
 generate day:
 	cp -R template {{day}}
 	sed -i '' 's/"day-xx"/"{{day}}"/' {{day}}/Cargo.toml
+	sed -i '' -e 's/"day-xx"/"{{day}}"/' -e 's/"day-"/"day_"/' {{day}}/benches/benchmark.rs
 	cargo add {{day}} --path {{day}}
