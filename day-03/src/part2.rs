@@ -12,9 +12,175 @@ const INPUT: &str = include_str!("input.txt");
 
 pub fn run() -> String {
     process(INPUT).to_string()
+    // process_with_nom(INPUT).to_string()
 }
 
 fn process(input: &str) -> u32 {
+    let mut input = input;
+    let mut total = 0;
+
+    loop {
+        let do_index = input.find("do()");
+        let dont_index = input.find("don't()");
+        let mul_index = input.find("mul(");
+
+        match (do_index, dont_index, mul_index) {
+            (_, _, None) => return total,
+            (None, None, Some(mul)) => {
+                input = &input[mul + 4..];
+                let end = input.find(')');
+
+                let Some(end) = end else {
+                    return total;
+                };
+
+                if end > 7 {
+                    // too far away - must be invalid.
+                    continue;
+                }
+
+                let Some((left, right)) = &input[..end].split_once(',') else {
+                    // no `,` before `)`
+                    continue;
+                };
+
+                if !(1..=3).contains(&left.len()) {
+                    continue;
+                }
+                if !(1..=3).contains(&right.len()) {
+                    continue;
+                }
+
+                if !left.chars().all(|c| c.is_ascii_digit()) {
+                    continue;
+                }
+                if !right.chars().all(|c| c.is_ascii_digit()) {
+                    continue;
+                }
+
+                let left = left.parse::<u32>().unwrap_or_default();
+                let right = right.parse::<u32>().unwrap_or_default();
+
+                total += left * right;
+                continue;
+            }
+            (None, Some(disable), Some(mul)) => {
+                if disable < mul {
+                    return total;
+                }
+            }
+            (Some(enable), None, Some(mul)) => {
+                if enable < mul {
+                    // Nothing to do if enable is the smallest
+                    //
+                    input = &input[enable + 4..];
+                    continue;
+                }
+
+                // When mul is smallest, calculate multiplication if it is valid
+                if mul < enable {
+                    input = &input[mul + 4..];
+                    let end = input.find(')');
+
+                    let Some(end) = end else {
+                        return total;
+                    };
+
+                    if end > 7 {
+                        // too far away - must be invalid.
+                        continue;
+                    }
+
+                    let Some((left, right)) = &input[..end].split_once(',') else {
+                        // no `,` before `)`
+                        continue;
+                    };
+
+                    if !(1..=3).contains(&left.len()) {
+                        continue;
+                    }
+                    if !(1..=3).contains(&right.len()) {
+                        continue;
+                    }
+
+                    if !left.chars().all(|c| c.is_ascii_digit()) {
+                        continue;
+                    }
+                    if !right.chars().all(|c| c.is_ascii_digit()) {
+                        continue;
+                    }
+
+                    let left = left.parse::<u32>().unwrap_or_default();
+                    let right = right.parse::<u32>().unwrap_or_default();
+
+                    total += left * right;
+                    continue;
+                }
+
+                unreachable!("shouldn't be able to reach here");
+            }
+            (Some(enable), Some(disable), Some(mul)) => {
+                // Disabled is the smallest
+                if disable < enable && disable < mul {
+                    // Skip into the next enabled spot - skipping disabled mul
+                    input = &input[enable + 4..];
+                    continue;
+                }
+
+                if enable < mul && enable < disable {
+                    // Nothing to do if enable is the smallest
+                    //
+                    input = &input[enable + 4..];
+                    continue;
+                }
+
+                // When mul is smallest, calculate multiplication if it is valid
+                if mul < enable && mul < disable {
+                    input = &input[mul + 4..];
+                    let end = input.find(')');
+
+                    let Some(end) = end else {
+                        return total;
+                    };
+
+                    if end > 7 {
+                        // too far away - must be invalid.
+                        continue;
+                    }
+
+                    let Some((left, right)) = &input[..end].split_once(',') else {
+                        // no `,` before `)`
+                        continue;
+                    };
+
+                    if !(1..=3).contains(&left.len()) {
+                        continue;
+                    }
+                    if !(1..=3).contains(&right.len()) {
+                        continue;
+                    }
+
+                    if !left.chars().all(|c| c.is_ascii_digit()) {
+                        continue;
+                    }
+                    if !right.chars().all(|c| c.is_ascii_digit()) {
+                        continue;
+                    }
+
+                    let left = left.parse::<u32>().unwrap_or_default();
+                    let right = right.parse::<u32>().unwrap_or_default();
+
+                    total += left * right;
+                    continue;
+                }
+
+                unreachable!("shouldn't be able to reach here");
+            }
+        }
+    }
+}
+
+fn process_with_nom(input: &str) -> u32 {
     parse_line(input)
         .iter()
         .fold(
@@ -151,8 +317,13 @@ pub mod benchmarks {
         divan::main();
     }
 
-    #[divan::bench()]
+    #[divan::bench(sample_count = 1000)]
     fn bench_process() {
         super::process(INPUT);
+    }
+
+    #[divan::bench(sample_count = 1000)]
+    fn bench_process_with_nom() {
+        super::process_with_nom(INPUT);
     }
 }
