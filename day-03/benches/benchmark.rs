@@ -1,4 +1,4 @@
 fn main() {
     #[cfg(feature = "bench")]
-    day_xx::part2::benchmarks::main();
+    day_03::part2::benchmarks::main();
 }
