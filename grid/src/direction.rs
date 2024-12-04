@@ -15,6 +15,7 @@ pub enum Direction {
 }
 
 impl From<&Direction> for Vec2 {
+    #[inline]
     fn from(direction: &Direction) -> Self {
         match direction {
             Direction::N => Vec2::new(0, -1),
@@ -30,6 +31,7 @@ impl From<&Direction> for Vec2 {
 }
 
 impl From<Direction> for Vec2 {
+    #[inline]
     fn from(direction: Direction) -> Self {
         Vec2::from(&direction)
     }
@@ -38,6 +40,7 @@ impl From<Direction> for Vec2 {
 impl Add<&Direction> for &Vec2 {
     type Output = Vec2;
 
+    #[inline]
     fn add(self, rhs: &Direction) -> Self::Output {
         let rhs: Vec2 = rhs.into();
         Vec2 {
@@ -49,7 +52,7 @@ impl Add<&Direction> for &Vec2 {
 
 impl Add<Direction> for &Vec2 {
     type Output = Vec2;
-
+    #[inline]
     fn add(self, rhs: Direction) -> Self::Output {
         self + &rhs
     }

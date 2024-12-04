@@ -10,6 +10,7 @@ pub struct Grid<'a> {
 }
 
 impl<'a> Grid<'a> {
+    #[inline]
     pub fn new(input: &'a str) -> Self {
         let mut lines = input.lines();
         let cols = lines.next().expect("there should be lines").len();
@@ -17,7 +18,7 @@ impl<'a> Grid<'a> {
 
         Self { rows, cols, input }
     }
-
+    #[inline]
     pub fn index_to_vec2(&self, index: usize) -> Vec2 {
         // + 1 offset to account for newlines
         let x = index.rem(self.cols + 1) as i32;
@@ -25,7 +26,7 @@ impl<'a> Grid<'a> {
 
         Vec2 { x, y }
     }
-
+    #[inline]
     pub fn point_to_index(&self, point: &Vec2) -> Option<usize> {
         if (0..self.cols as i32).contains(&point.x) && (0..self.rows as i32).contains(&point.y) {
             Some((self.cols + 1).mul(point.y as usize).add(point.x as usize))
@@ -33,7 +34,7 @@ impl<'a> Grid<'a> {
             None
         }
     }
-
+    #[inline]
     pub fn get(&self, point: &Vec2) -> Option<char> {
         if (0..self.cols as i32).contains(&point.x) && (0..self.rows as i32).contains(&point.y) {
             let i = self.point_to_index(point)?;
