@@ -9,7 +9,7 @@ dhat day part:
 bench day:
 	cargo bench -p {{day}} --features bench
 generate day:
-	cp -R template {{day}}
-	sed -i '' 's/"day-xx"/"{{day}}"/' {{day}}/Cargo.toml
-	sed -i '' -e 's/"day-xx"/"{{day}}"/' -e 's/"day-"/"day_"/' {{day}}/benches/benchmark.rs
-	cargo add {{day}} --path {{day}}
+	cp -R template day-{{day}}
+	sed -i '' 's/xx/{{day}}/' day-{{day}}/Cargo.toml
+	sed -i '' 's/xx/{{day}}/' day-{{day}}/benches/benchmark.rs
+	cargo add day-{{day}} --path day-{{day}}
