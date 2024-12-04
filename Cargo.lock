@@ -25,6 +25,7 @@ dependencies = [
  "day-01",
  "day-02",
  "day-03",
+ "day-04",
  "dhat",
  "nom",
  "tracing",
@@ -203,6 +204,14 @@ version = "0.1.0"
 dependencies = [
  "divan",
  "nom",
+ "tracing",
+]
+
+[[package]]
+name = "day-04"
+version = "0.1.0"
+dependencies = [
+ "divan",
  "tracing",
 ]
 

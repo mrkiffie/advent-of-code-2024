@@ -14,6 +14,7 @@ clap = { version = "4.4.21", features = ["derive"] }
 day-01 = { version = "0.1.0", path = "day-01" }
 day-02 = { version = "0.1.0", path = "day-02" }
 day-03 = { version = "0.1.0", path = "day-03" }
+day-04 = { version = "0.1.0", path = "day-04" }
 dhat = "0.3.3"
 nom = { workspace = true }
 tracing = { workspace = true }
