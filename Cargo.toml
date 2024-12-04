@@ -31,5 +31,8 @@ grid = { version = "0.1.0", path = "grid" }
 inherits = "release"
 debug = 1
 
+[profile.bench]
+lto = "thin"
+
 [features]
 dhat-heap = []
