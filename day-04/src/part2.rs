@@ -1,3 +1,4 @@
+use grid::{Direction, Grid, Vec2};
 use std::ops::Add;
 
 const INPUT: &str = include_str!("input.txt");
@@ -11,106 +12,44 @@ pub fn run() -> String {
 fn process(input: &str) -> usize {
     let mut searcher = Searcher::new(input);
 
-    let mut xmases = vec![];
+    let mut counter = 0;
     while let Some(xmas) = searcher.next() {
-        if let Some(xmas) = xmas {
-            xmases.push(xmas);
+        if xmas.is_some() {
+            counter += 1;
         }
     }
 
-    xmases.len()
+    counter
 }
 
 #[derive(Debug)]
-struct Vec2 {
-    x: i32,
-    y: i32,
-}
-
-impl Vec2 {
-    fn new(x: i32, y: i32) -> Self {
-        Self { x, y }
-    }
-}
-
-impl Add<Direction> for &Vec2 {
-    type Output = Vec2;
-
-    fn add(self, rhs: Direction) -> Self::Output {
-        let rhs: Vec2 = rhs.into();
-        Vec2 {
-            x: self.x + rhs.x,
-            y: self.y + rhs.y,
-        }
-    }
-}
-
-#[derive(Debug, Clone)]
-enum Direction {
-    NE,
-    SE,
-    SW,
-    NW,
-}
-
-impl From<Direction> for Vec2 {
-    fn from(direction: Direction) -> Self {
-        match direction {
-            Direction::NE => Vec2::new(1, -1),
-            Direction::SE => Vec2::new(1, 1),
-            Direction::SW => Vec2::new(-1, 1),
-            Direction::NW => Vec2::new(-1, -1),
-        }
-    }
-}
-#[derive(Debug)]
-struct Grid {
-    rows: usize,
-    cols: usize,
-    data: Vec<Vec<char>>,
-}
-
-impl Grid {
-    fn new(input: &str) -> Self {
-        let mut lines = input.lines();
-        let cols = lines.next().expect("there should be lines").len();
-        let lines = input.lines();
-        let rows = lines.count();
-
-        let data = input.lines().map(|row| row.chars().collect()).collect();
-
-        Self { rows, cols, data }
-    }
-}
-
-#[derive(Debug)]
-struct Searcher {
+struct Searcher<'a> {
     row_index: usize,
     col_index: usize,
-    grid: Grid,
+    grid: Grid<'a>,
 }
 
-impl Searcher {
-    fn new(input: &str) -> Self {
+impl<'a> Searcher<'a> {
+    fn new(input: &'a str) -> Self {
         Self {
-            row_index: 0,
-            col_index: 0,
+            row_index: 1,
+            col_index: 1,
             grid: Grid::new(input),
         }
     }
 }
 
-type Xmas = Vec2;
+type Xmas = ();
 
-impl Searcher {
+impl Searcher<'_> {
     fn next(&mut self) -> Option<Option<Xmas>> {
-        if self.row_index == self.grid.rows {
+        if self.row_index == self.grid.rows - 1 {
             return None;
         }
         let result = self.check();
         self.col_index += 1;
 
-        if self.col_index == self.grid.cols {
+        if self.col_index == self.grid.cols - 1 {
             self.col_index = 0;
             self.row_index += 1;
         }
@@ -120,22 +59,22 @@ impl Searcher {
 
     fn check(&self) -> Option<Xmas> {
         let a_index = Vec2::new(self.col_index as i32, self.row_index as i32);
-        let a = self.get(&a_index)?;
+        let a = self.grid.get(&a_index)?;
         if a != 'A' {
             return None;
         }
 
         let index = a_index.add(Direction::NW);
-        let nw = self.get(&index)?;
+        let nw = self.grid.get(&index)?;
 
         let index = a_index.add(Direction::SE);
-        let se = self.get(&index)?;
+        let se = self.grid.get(&index)?;
 
         let index = a_index.add(Direction::NE);
-        let ne = self.get(&index)?;
+        let ne = self.grid.get(&index)?;
 
         let index = a_index.add(Direction::SW);
-        let sw = self.get(&index)?;
+        let sw = self.grid.get(&index)?;
 
         match (nw, se) {
             ('M', 'S') => {}
@@ -153,17 +92,7 @@ impl Searcher {
             }
         }
 
-        Some(a_index)
-    }
-
-    fn get(&self, index: &Vec2) -> Option<char> {
-        if (0..self.grid.cols as i32).contains(&index.x)
-            && (0..self.grid.rows as i32).contains(&index.y)
-        {
-            Some(self.grid.data[index.y as usize][index.x as usize])
-        } else {
-            None
-        }
+        Some(())
     }
 }
 
