@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 const INPUT: &str = include_str!("input.txt");
 
 #[tracing::instrument(level = "trace", skip())]
@@ -9,35 +7,9 @@ pub fn run() -> String {
 
 #[tracing::instrument(level = "trace", skip(input))]
 fn process(input: &str) -> u32 {
-    let (lookup, pages) = parse(input).unwrap_or_default();
+    let (ordering, pages) = input.split_once("\n\n").unwrap();
 
-    let result = pages
-        .iter()
-        .filter(|pages| {
-            pages.is_sorted_by(|key, b| {
-                let value = lookup.get(key).unwrap_or(&0);
-                value & (1 << b) != 0
-            })
-        })
-        .map(|pages| {
-            // find middle pages.
-            let len = pages.len();
-            let index = len / 2;
-            let middle_page = pages.get(index).expect("index exists");
-            *middle_page as u32
-        })
-        .sum();
-
-    result
-}
-
-type OrderingLookup = HashMap<u8, u128>;
-type Pages = Vec<Vec<u8>>;
-
-fn parse(input: &str) -> Option<(OrderingLookup, Pages)> {
-    let (ordering, pages) = input.split_once("\n\n")?;
-
-    let ordering_lookup: HashMap<u8, u128> = ordering
+    let lookup: [u128; 100] = ordering
         .lines()
         .map(|line| {
             line.split_once('|').map(|(a, b)| {
@@ -47,37 +19,51 @@ fn parse(input: &str) -> Option<(OrderingLookup, Pages)> {
                 )
             })
         })
-        .fold(HashMap::with_capacity(64), |mut accumulator, pair| {
+        .fold([0; 100], |mut accumulator, pair| {
             if let Some((key, value)) = pair {
-                accumulator
-                    .entry(key)
-                    .and_modify(|e| *e += 1 << value)
-                    .or_insert(1 << value);
+                accumulator[key as usize] += 1 << value;
             }
-
             accumulator
         });
 
-    let pages: Pages = pages
+    let result = pages
         .lines()
-        .map(|line| {
-            line.split(',')
+        .filter_map(|line| {
+            let pages: Vec<u8> = line
+                .split(',')
                 .map(|page| page.parse::<u8>().expect("should be valid"))
-                .collect::<Vec<_>>()
-        })
-        .collect::<Vec<_>>();
+                .collect();
 
-    Some((ordering_lookup, pages))
+            let is_sorted = pages.is_sorted_by(|key, b| lookup[*key as usize] & (1 << b) != 0);
+
+            if !is_sorted {
+                return None;
+            }
+
+            let mut pages = pages;
+
+            pages.sort_by(|a, b| {
+                let value = lookup[*a as usize];
+                match value & (1 << b) != 0 {
+                    true => std::cmp::Ordering::Less,
+                    false => std::cmp::Ordering::Greater,
+                }
+            });
+
+            // find middle pages.
+            let len = pages.len();
+            let index = len / 2;
+            let middle_page = pages.get(index).expect("index exists");
+            Some(*middle_page as u32)
+        })
+        .sum();
+
+    result
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn test_parse() {
-        parse(INPUT).expect("Something");
-    }
 
     #[test]
     fn it_works() {
