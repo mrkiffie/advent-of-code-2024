@@ -26,35 +26,23 @@ fn process(input: &str) -> u32 {
             accumulator
         });
 
-    let result = pages
+    let result: u32 = pages
         .lines()
         .filter_map(|line| {
-            let pages: Vec<u8> = line
+            let is_sorted = line
                 .split(',')
                 .map(|page| page.parse::<u8>().expect("should be valid"))
-                .collect();
-
-            let is_sorted = pages.is_sorted_by(|key, b| lookup[*key as usize] & (1 << b) != 0);
+                .is_sorted_by(|key, b| lookup[*key as usize] & (1 << b) != 0);
 
             if !is_sorted {
                 return None;
             }
 
-            let mut pages = pages;
+            let middle_index = line.split(',').count() / 2;
 
-            pages.sort_by(|a, b| {
-                let value = lookup[*a as usize];
-                match value & (1 << b) != 0 {
-                    true => std::cmp::Ordering::Less,
-                    false => std::cmp::Ordering::Greater,
-                }
-            });
-
-            // find middle pages.
-            let len = pages.len();
-            let index = len / 2;
-            let middle_page = pages.get(index).expect("index exists");
-            Some(*middle_page as u32)
+            line.split(',')
+                .nth(middle_index)
+                .and_then(|n| n.parse::<u32>().ok())
         })
         .sum();
 
