@@ -9,6 +9,7 @@ rust-version = "1.83.0"
 [dependencies]
 divan = { workspace = true, optional = true }
 tracing = { workspace = true }
+grid = { workspace = true }
 
 [features]
 bench = ["dep:divan"]
