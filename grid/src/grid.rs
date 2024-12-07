@@ -14,7 +14,7 @@ impl<'a> Grid<'a> {
     pub fn new(input: &'a str) -> Self {
         let mut lines = input.lines();
         let cols = lines.next().expect("there should be lines").len();
-        let rows = input.len().div_ceil(cols);
+        let rows = input.len().div(cols);
 
         Self { rows, cols, input }
     }
