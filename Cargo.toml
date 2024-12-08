@@ -10,7 +10,7 @@ rust-version = "1.83.0"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-clap = { version = "4.4.21", features = ["derive"] }
+clap = { version = "4.5.23", features = ["derive"] }
 day-01 = { version = "0.1.0", path = "day-01" }
 day-02 = { version = "0.1.0", path = "day-02" }
 day-03 = { version = "0.1.0", path = "day-03" }
@@ -22,7 +22,7 @@ tracing = { workspace = true }
 tracing-subscriber = { workspace = true }
 
 [workspace.dependencies]
-divan = "0.1.16"
+divan = "0.1.17"
 grid = { version = "0.1.0", path = "grid" }
 glam = "0.29.2"
 itertools = "0.13.0"
