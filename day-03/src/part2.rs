@@ -12,7 +12,6 @@ const INPUT: &str = include_str!("input.txt");
 
 pub fn run() -> String {
     process(INPUT).to_string()
-    // process_with_nom(INPUT).to_string()
 }
 
 fn process(input: &str) -> u32 {
@@ -180,7 +179,7 @@ fn process(input: &str) -> u32 {
     }
 }
 
-fn process_with_nom(input: &str) -> u32 {
+pub fn process_with_nom(input: &str) -> u32 {
     parse_line(input)
         .iter()
         .fold(
