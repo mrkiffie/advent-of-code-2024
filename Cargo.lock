@@ -29,7 +29,6 @@ dependencies = [
  "day-05",
  "day-06",
  "dhat",
- "nom",
  "tracing",
  "tracing-subscriber",
 ]
