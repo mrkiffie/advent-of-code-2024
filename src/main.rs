@@ -37,6 +37,8 @@ fn main() {
         ("day-05", 2) => day_05::part2::run(),
         ("day-06", 1) => day_06::part1::run(),
         ("day-06", 2) => day_06::part2::run(),
+        ("day-07", 1) => day_07::part1::run(),
+        ("day-07", 2) => day_07::part2::run(),
         _ => format!("{} not implemented in src/main.rs", args.day),
     };
 
