@@ -1,7 +1,8 @@
+const INPUT: &str = include_str!("input.txt");
+
 #[tracing::instrument(level = "trace", skip())]
 pub fn run() -> usize {
-    let input = include_str!("input.txt");
-    process(input) as usize
+    process(INPUT) as usize
 }
 
 #[tracing::instrument(level = "trace", skip(input))]
@@ -40,5 +41,19 @@ mod tests {
     fn it_works() {
         let result = process("3   4\n4   3\n2   5\n1   3\n3   9\n3   3");
         assert_eq!(result, 11);
+    }
+}
+
+#[cfg(feature = "bench")]
+pub mod benchmarks {
+    use super::INPUT;
+
+    pub fn main() {
+        divan::main();
+    }
+
+    #[divan::bench()]
+    fn bench_process() {
+        super::process(INPUT);
     }
 }

@@ -7,10 +7,11 @@ use nom::{
     IResult,
 };
 
+const INPUT: &str = include_str!("input.txt");
+
 #[tracing::instrument(level = "trace", skip())]
 pub fn run() -> usize {
-    let input = include_str!("input.txt");
-    process(input) as usize
+    process(INPUT) as usize
 }
 
 #[tracing::instrument(level = "trace", skip(input))]
@@ -71,5 +72,19 @@ mod tests {
         let result =
             process("xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))");
         assert_eq!(result, 161);
+    }
+}
+
+#[cfg(feature = "bench")]
+pub mod benchmarks {
+    use super::INPUT;
+
+    pub fn main() {
+        divan::main();
+    }
+
+    #[divan::bench()]
+    fn bench_process() {
+        super::process(INPUT);
     }
 }
