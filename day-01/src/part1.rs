@@ -22,13 +22,11 @@ fn process(input: &str) -> u64 {
     left.sort();
     right.sort();
 
-    let result: u64 = left.iter().zip(right).map(|(a, b)| {
-        if a > &b {
-            a - b
-        } else {
-            b - a
-        }
-    }).sum();
+    let result: u64 = left
+        .iter()
+        .zip(right)
+        .map(|(a, b)| if a > &b { a - b } else { b - a })
+        .sum();
 
     result
 }
