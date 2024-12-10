@@ -8,9 +8,9 @@ use nom::{
 };
 
 #[tracing::instrument(level = "trace", skip())]
-pub fn run() -> String {
+pub fn run() -> usize {
     let input = include_str!("input.txt");
-    process(input).to_string()
+    process(input) as usize
 }
 
 #[tracing::instrument(level = "trace", skip(input))]

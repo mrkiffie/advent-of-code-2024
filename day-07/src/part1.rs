@@ -4,8 +4,8 @@ use rayon::prelude::*;
 const INPUT: &str = include_str!("input.txt");
 
 #[tracing::instrument(level = "trace", skip())]
-pub fn run() -> String {
-    process(INPUT).to_string()
+pub fn run() -> usize {
+    process(INPUT) as usize
 }
 
 #[derive(Debug, Clone)]
