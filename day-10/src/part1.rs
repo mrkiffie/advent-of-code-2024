@@ -2,10 +2,11 @@ use std::collections::HashSet;
 
 use grid::{Direction, Grid, Vec2};
 
+const INPUT: &str = include_str!("input.txt");
+
 #[tracing::instrument(level = "trace", skip())]
 pub fn run() -> String {
-    let input = include_str!("input.txt");
-    process(input).to_string()
+    process(INPUT).to_string()
 }
 
 const DIRECTIONS: [grid::Direction; 4] = [Direction::N, Direction::E, Direction::S, Direction::W];
@@ -96,5 +97,19 @@ mod tests {
 10456732",
         );
         assert_eq!(result, 36);
+    }
+}
+
+#[cfg(feature = "bench")]
+pub mod benchmarks {
+    use super::INPUT;
+
+    pub fn main() {
+        divan::main();
+    }
+
+    #[divan::bench()]
+    fn bench_process() {
+        super::process(INPUT);
     }
 }
