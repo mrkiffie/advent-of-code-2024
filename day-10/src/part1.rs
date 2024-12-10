@@ -24,31 +24,43 @@ impl Vec2Ext for Vec2 {
 trait GridExt {
     fn get_digit(&self, point: &Vec2) -> Option<u32>;
 
-    fn get_neighbours(&self, point: &Vec2) -> Vec<Vec2>;
+    fn get_neighbours(&self, point: &Vec2) -> Neighbours;
 }
 
 impl GridExt for Grid<'_> {
+    #[inline]
     fn get_digit(&self, point: &Vec2) -> Option<u32> {
         self.get(point).and_then(|c| c.to_digit(10))
     }
 
-    fn get_neighbours(&self, point: &Vec2) -> Vec<Vec2> {
-        if let Some(digit) = self.get_digit(point) {
-            DIRECTIONS
-                .iter()
-                .map(|direction| point + direction)
-                .filter_map(|neighbour| {
-                    if let Some(next_digit) = self.get_digit(&neighbour) {
-                        if next_digit == digit + 1 {
-                            return Some(neighbour);
-                        }
-                    }
-                    None
-                })
-                .collect::<Vec<Vec2>>()
-        } else {
-            vec![]
+    #[inline]
+    fn get_neighbours(&self, point: &Vec2) -> Neighbours {
+        Neighbours {
+            grid: self,
+            point: point.clone(),
+            direction_index: 0,
         }
+    }
+}
+
+struct Neighbours<'a> {
+    grid: &'a Grid<'a>,
+    point: Vec2,
+    direction_index: usize,
+}
+
+impl Iterator for Neighbours<'_> {
+    type Item = (Vec2, char);
+
+    fn next(&mut self) -> Option<Self::Item> {
+        while self.direction_index < 4 {
+            let point = &self.point + &DIRECTIONS[self.direction_index];
+            self.direction_index += 1;
+            if let Some(c) = self.grid.get(&point) {
+                return Some((point, c));
+            }
+        }
+        None
     }
 }
 
@@ -57,26 +69,38 @@ fn process(input: &str) -> usize {
     let grid = Grid::new(input);
     let mut counter = 0;
     let mut ends: HashSet<Vec2> = HashSet::new();
-    let mut queue: Vec<Vec2> = Vec::with_capacity(100);
+    let mut queue: Vec<Vec2> = Vec::with_capacity(16);
     for y in 0..grid.rows {
         for x in 0..grid.cols {
             ends.clear();
             let current = Vec2::at(x, y);
             if let Some(0) = grid.get_digit(&current) {
-                queue.push(current.clone());
+                queue.push(current);
             }
             while let Some(point) = queue.pop() {
-                if let Some(9) = grid.get_digit(&point) {
-                    ends.insert(point.clone());
-                }
-                for n in grid.get_neighbours(&point) {
-                    queue.push(n);
+                match grid.get_digit(&point) {
+                    Some(9) => {
+                        ends.insert(point);
+                    }
+                    Some(previous) => {
+                        let neighbours = grid
+                            .get_neighbours(&point)
+                            .filter(|(_, c)| {
+                                c.to_digit(10)
+                                    .map(|height| height == previous + 1)
+                                    .unwrap_or_default()
+                            })
+                            .map(|(neighbour, _)| neighbour);
+                        for neighbour in neighbours {
+                            queue.push(neighbour);
+                        }
+                    }
+                    _ => {}
                 }
             }
             counter += ends.len();
         }
     }
-
     counter
 }
 
