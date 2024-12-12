@@ -33,6 +33,7 @@ dependencies = [
  "day-09",
  "day-10",
  "day-11",
+ "day-12",
  "dhat",
  "tracing",
  "tracing-subscriber",
@@ -309,6 +310,15 @@ name = "day-11"
 version = "0.1.0"
 dependencies = [
  "divan",
+ "tracing",
+]
+
+[[package]]
+name = "day-12"
+version = "0.1.0"
+dependencies = [
+ "divan",
+ "grid",
  "tracing",
 ]
 
