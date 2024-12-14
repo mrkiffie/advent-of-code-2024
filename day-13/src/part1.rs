@@ -98,6 +98,20 @@ fn process(input: &str) -> usize {
                                 return count * n as usize;
                             } else {
                                 return 0;
+                                // #[cfg(debug_assertions)]
+                                // print!("🔵");
+                                // // the slope is the same - but there isn't a common factor
+                                // #[cfg(debug_assertions)]
+                                // println!(
+                                //     "equal slope prize: {:?}, claw: {:?}, a: {:?}, b: {:?}, {:?} {:?}",
+                                //     p, claw, a, b, c_slope, p_slope
+                                // );
+
+                                // #[cfg(debug_assertions)]
+                                // print!("🔴");
+                                // b_count +=1;
+                                // claw += b;
+                                // count += 1;
                             }
                         }
                     }
