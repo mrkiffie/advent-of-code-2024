@@ -35,6 +35,7 @@ dependencies = [
  "day-11",
  "day-12",
  "day-13",
+ "day-14",
  "dhat",
  "tracing",
  "tracing-subscriber",
@@ -325,6 +326,15 @@ dependencies = [
 
 [[package]]
 name = "day-13"
+version = "0.1.0"
+dependencies = [
+ "divan",
+ "glam",
+ "tracing",
+]
+
+[[package]]
+name = "day-14"
 version = "0.1.0"
 dependencies = [
  "divan",
