@@ -117,6 +117,7 @@ dependencies = [
  "day-12",
  "day-13",
  "day-14",
+ "day-15",
  "dhat",
  "tracing",
  "tracing-subscriber",
@@ -2155,6 +2156,15 @@ dependencies = [
  "bevy_egui",
  "divan",
  "egui",
+ "glam",
+ "tracing",
+]
+
+[[package]]
+name = "day-15"
+version = "0.1.0"
+dependencies = [
+ "divan",
  "glam",
  "tracing",
 ]

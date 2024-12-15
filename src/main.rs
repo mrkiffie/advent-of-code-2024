@@ -53,6 +53,8 @@ fn main() {
         ("day-13", 2) => day_13::part2::run(),
         ("day-14", 1) => day_14::part1::run(),
         ("day-14", 2) => unimplemented!("Run `cargo run -p day-14` instead"),
+        ("day-15", 1) => day_15::part1::run(),
+        ("day-15", 2) => day_15::part2::run(),
         _ => unimplemented!("{} not implemented in src/main.rs", args.day),
     };
 
