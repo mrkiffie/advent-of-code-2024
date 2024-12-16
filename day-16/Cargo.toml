@@ -9,6 +9,7 @@ rust-version = "1.83.0"
 [dependencies]
 divan = { workspace = true, optional = true }
 grid = { workspace = true }
+pathfinding = "4.12.0"
 tracing = { workspace = true }
 
 [features]

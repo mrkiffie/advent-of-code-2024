@@ -1,4 +1,4 @@
-use std::ops::Add;
+use std::ops::{Add, Neg};
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Vec2 {
@@ -20,6 +20,28 @@ impl Add<Vec2> for &Vec2 {
         Vec2 {
             x: self.x + rhs.x,
             y: self.y + rhs.y,
+        }
+    }
+}
+
+impl Add<&Vec2> for &Vec2 {
+    type Output = Vec2;
+    #[inline]
+    fn add(self, rhs: &Vec2) -> Self::Output {
+        Vec2 {
+            x: self.x + rhs.x,
+            y: self.y + rhs.y,
+        }
+    }
+}
+
+impl Neg for Vec2 {
+    type Output = Vec2;
+
+    fn neg(self) -> Self::Output {
+        Vec2 {
+            x: -self.x,
+            y: -self.y,
         }
     }
 }
