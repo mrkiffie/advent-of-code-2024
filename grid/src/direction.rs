@@ -2,7 +2,7 @@ use std::ops::Add;
 
 use crate::Vec2;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq)]
 pub enum Direction {
     N,
     NE,
