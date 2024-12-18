@@ -10,8 +10,8 @@ use nom::{
 
 const INPUT: &str = include_str!("input.txt");
 
-pub fn run() -> usize {
-    process(INPUT) as usize
+pub fn run() -> String {
+    process(INPUT).to_string()
 }
 
 fn process(input: &str) -> u32 {

@@ -3,10 +3,10 @@ use std::{cmp::Ordering, collections::HashMap};
 const INPUT: &str = include_str!("input.txt");
 
 #[tracing::instrument(level = "trace", skip())]
-pub fn run() -> usize {
-    sort_and_indices(INPUT) as usize
-    // hashmap_counting(INPUT) as usize
-    // filter_iteration(INPUT) as usize
+pub fn run() -> String {
+    sort_and_indices(INPUT).to_string()
+    // hashmap_counting(INPUT).to_string()
+    // filter_iteration(INPUT).to_string()
 }
 
 #[tracing::instrument(level = "trace", skip(input))]

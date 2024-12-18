@@ -4,9 +4,8 @@ use std::ops::{BitXor, Rem};
 const INPUT: &str = include_str!("input.txt");
 
 #[tracing::instrument(level = "trace", skip())]
-pub fn run() -> usize {
-    println!("{}", process(INPUT));
-    0
+pub fn run() -> String {
+    process(INPUT).to_string()
 }
 
 #[tracing::instrument(level = "trace", skip(input))]

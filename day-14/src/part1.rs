@@ -3,10 +3,10 @@ use glam::IVec2;
 const INPUT: &str = include_str!("input.txt");
 
 #[tracing::instrument(level = "trace", skip())]
-pub fn run() -> usize {
+pub fn run() -> String {
     let grid = IVec2::new(101, 103);
     let ticks = 100;
-    process(INPUT, grid, ticks)
+    process(INPUT, grid, ticks).to_string()
 }
 
 struct Robot {

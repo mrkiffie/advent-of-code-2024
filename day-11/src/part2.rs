@@ -3,8 +3,8 @@ use std::collections::HashMap;
 const INPUT: &str = include_str!("input.txt");
 
 #[tracing::instrument(level = "trace", skip())]
-pub fn run() -> usize {
-    process(INPUT, 75)
+pub fn run() -> String {
+    process(INPUT, 75).to_string()
 }
 
 #[tracing::instrument(level = "trace", skip(input))]

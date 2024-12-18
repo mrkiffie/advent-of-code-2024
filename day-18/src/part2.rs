@@ -5,10 +5,8 @@ use std::fmt::Write;
 const INPUT: &str = include_str!("input.txt");
 
 #[tracing::instrument(level = "trace", skip())]
-pub fn run() -> usize {
-    println!("{}", process(INPUT, 71, 1024));
-
-    0
+pub fn run() -> String {
+    process(INPUT, 71, 1024)
 }
 
 #[tracing::instrument(level = "trace", skip(input))]
