@@ -52,7 +52,7 @@ impl Iterator for Neighbours<'_> {
 
     fn next(&mut self) -> Option<Self::Item> {
         while self.direction_index < 4 {
-            let point = &self.point + &DIRECTIONS[self.direction_index];
+            let point = &self.point + DIRECTIONS[self.direction_index];
             self.direction_index += 1;
             if let Some(c) = self.grid.get(&point) {
                 return Some((point, c));
