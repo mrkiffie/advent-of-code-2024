@@ -42,11 +42,7 @@ impl Add<&Direction> for &Vec2 {
 
     #[inline]
     fn add(self, rhs: &Direction) -> Self::Output {
-        let rhs: Vec2 = rhs.into();
-        Vec2 {
-            x: self.x + rhs.x,
-            y: self.y + rhs.y,
-        }
+        self + *rhs
     }
 }
 
@@ -54,6 +50,10 @@ impl Add<Direction> for &Vec2 {
     type Output = Vec2;
     #[inline]
     fn add(self, rhs: Direction) -> Self::Output {
-        self + &rhs
+        let rhs: Vec2 = rhs.into();
+        Vec2 {
+            x: self.x + rhs.x,
+            y: self.y + rhs.y,
+        }
     }
 }
