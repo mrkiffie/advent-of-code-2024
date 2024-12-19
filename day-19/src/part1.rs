@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use crate::trie::Trie;
 
 const INPUT: &str = include_str!("input.txt");
 
@@ -7,35 +7,23 @@ pub fn run() -> String {
     process(INPUT).to_string()
 }
 
-fn is_composable(
-    design: &str,
-    patterns: &[&str],
-    memo: &mut HashMap<String, bool>,
-    ignore_self: bool,
-) -> bool {
+fn dfs(design: &str, patterns: &Trie, cache: &mut [usize]) -> usize {
     if design.is_empty() {
-        return true;
+        return 1;
     }
 
-    if let Some(b) = memo.get(design) {
-        return *b;
+    let c = cache[design.len() - 1];
+    if c != usize::MAX {
+        return c;
     }
 
-    memo.insert(design.to_string(), false);
-
-    for pattern in patterns {
-        if ignore_self && *pattern == design {
-            continue;
-        }
-        let len = pattern.len().min(design.len());
-        let start = &design[0..len];
-        let end = &design[len..];
-        if start == *pattern && is_composable(end, patterns, memo, ignore_self) {
-            memo.insert(design.to_string(), true);
-        }
+    let mut count = 0;
+    for i in patterns.common_prefix_lengths(design.as_bytes()) {
+        count += dfs(&design[i..], patterns, cache);
     }
 
-    *memo.get(design).expect("there should be an entry")
+    cache[design.len() - 1] = count;
+    count
 }
 
 #[tracing::instrument(level = "trace", skip(input))]
@@ -44,17 +32,19 @@ fn process(input: &str) -> usize {
 
     let patterns = lines.next().expect("should have valid input");
     let patterns = patterns.split(", ").collect::<Vec<_>>();
-
     let _ = lines.next();
 
-    let mut memo = HashMap::<String, bool>::new();
+    let mut trie = Trie::new();
+    for p in &patterns {
+        trie.insert(p);
+    }
 
     lines
-        .map(|design| {
-            memo.clear();
-            is_composable(design, &patterns, &mut memo, false)
+        .filter(|design| {
+            let mut cache = vec![usize::MAX; design.len()];
+            let count = dfs(design, &trie, &mut cache);
+            count > 0
         })
-        .filter(|x| *x)
         .count()
 }
 
