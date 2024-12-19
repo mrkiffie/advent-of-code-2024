@@ -121,6 +121,7 @@ dependencies = [
  "day-16",
  "day-17",
  "day-18",
+ "day-19",
  "dhat",
  "tracing",
  "tracing-subscriber",
@@ -2197,6 +2198,14 @@ dependencies = [
  "divan",
  "glam",
  "pathfinding",
+ "tracing",
+]
+
+[[package]]
+name = "day-19"
+version = "0.1.0"
+dependencies = [
+ "divan",
  "tracing",
 ]
 
