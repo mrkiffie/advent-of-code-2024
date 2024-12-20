@@ -30,6 +30,7 @@ day-16 = { version = "0.1.0", path = "day-16" }
 day-17 = { version = "0.1.0", path = "day-17" }
 day-18 = { version = "0.1.0", path = "day-18" }
 day-19 = { version = "0.1.0", path = "day-19" }
+day-20 = { version = "0.1.0", path = "day-20" }
 dhat = "0.3.3"
 tracing = { workspace = true }
 tracing-subscriber = { workspace = true }
