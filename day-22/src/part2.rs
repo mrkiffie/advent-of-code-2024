@@ -1,5 +1,5 @@
 use itertools::Itertools;
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 const INPUT: &str = include_str!("input.txt");
 
@@ -10,40 +10,30 @@ pub fn run() -> String {
 
 #[tracing::instrument(level = "trace", skip(input))]
 fn process(input: &str, count: usize) -> usize {
-    *input
-        .lines()
-        .map(|line| line.parse::<usize>().unwrap())
-        .map(|seed| {
-            generate_secret(seed)
-                .map(|secret| secret % 10)
-                .tuple_windows()
-                .map(|(a, b)| (b, 10 + b - a))
-                .take(count)
-                .tuple_windows()
-                .fold(HashMap::new(), |mut map, (a, b, c, d)| {
-                    let price = d.0;
-                    let key =
-                        (((a.1 + 10) << 24) | ((b.1 + 10) << 16) | ((c.1 + 10) << 8) | (d.1 + 10))
-                            as u32;
-
-                    #[cfg(test)]
-                    println!("{:?}: {}", key, price);
-
-                    map.entry(key).or_insert(price);
-                    map
-                })
-        })
-        .fold(HashMap::new(), |mut map, prices| {
-            for (key, value) in prices {
+    let mut map = HashMap::new();
+    for seed in input.lines().map(|line| line.parse::<usize>().unwrap()) {
+        let mut seen = HashSet::new();
+        for (key, value) in generate_secret(seed)
+            // ones digit
+            .map(|secret| secret % 10)
+            .tuple_windows()
+            // calculate price delta - shifted into the positive range
+            .map(|(a, b)| (b, 10 + b - a))
+            .take(count)
+            .tuple_windows()
+            // compress price deltas into a single u32
+            .map(|(a, b, c, d)| (((a.1 << 24) | (b.1 << 16) | (c.1 << 8) | d.1) as u32, d.0))
+        {
+            if seen.insert(key) {
                 map.entry(key)
                     .and_modify(|previous| *previous += value)
                     .or_insert(value);
             }
-            map
-        })
-        .values()
-        .max()
-        .unwrap()
+        }
+    }
+
+    let result = *map.values().max().unwrap();
+    result
 }
 
 struct SecretIterator {
@@ -55,25 +45,25 @@ impl Iterator for SecretIterator {
 
     fn next(&mut self) -> Option<Self::Item> {
         // Calculate the result of multiplying the secret number by 64.
-        let result = self.seed * 64;
+        let result = self.seed << 6;
         // Then, mix this result into the secret number.
         self.seed ^= result;
         // Finally, prune the secret number.
-        self.seed %= 16777216;
+        self.seed &= 0xFF_FFFF;
 
         // Calculate the result of dividing the secret number by 32. Round the result down to the nearest integer.
-        let result = self.seed / 32;
+        let result = self.seed >> 5;
         // Then, mix this result into the secret number.
         self.seed ^= result;
         // Finally, prune the secret number.
-        self.seed %= 16777216;
+        self.seed &= 0xFF_FFFF;
 
         // Calculate the result of multiplying the secret number by 2048.
-        let result = self.seed * 2048;
+        let result = self.seed << 11;
         // Then, mix this result into the secret number.
         self.seed ^= result;
         // Finally, prune the secret number.
-        self.seed %= 16777216;
+        self.seed &= 0xFF_FFFF;
 
         Some(self.seed)
     }
@@ -113,7 +103,7 @@ pub mod benchmarks {
         divan::main();
     }
 
-    #[divan::bench(sample_count = 10)]
+    #[divan::bench()]
     fn bench_process() {
         super::process(INPUT, 2000);
     }

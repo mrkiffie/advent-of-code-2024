@@ -7,11 +7,12 @@ pub fn run() -> String {
 
 #[tracing::instrument(level = "trace", skip(input))]
 fn process(input: &str) -> usize {
-    input
+    let result = input
         .lines()
         .filter_map(|line| line.parse::<usize>().ok())
         .filter_map(|seed| generate_secret(seed).nth(1999))
-        .sum()
+        .sum();
+    result
 }
 
 struct SecretIterator {
@@ -23,25 +24,25 @@ impl Iterator for SecretIterator {
 
     fn next(&mut self) -> Option<Self::Item> {
         // Calculate the result of multiplying the secret number by 64.
-        let result = self.seed * 64;
+        let result = self.seed << 6;
         // Then, mix this result into the secret number.
         self.seed ^= result;
-        //Finally, prune the secret number.
-        self.seed %= 16777216;
+        // Finally, prune the secret number.
+        self.seed &= 0xFF_FFFF;
 
         // Calculate the result of dividing the secret number by 32. Round the result down to the nearest integer.
-        let result = self.seed / 32;
+        let result = self.seed >> 5;
         // Then, mix this result into the secret number.
         self.seed ^= result;
         // Finally, prune the secret number.
-        self.seed %= 16777216;
+        self.seed &= 0xFF_FFFF;
 
         // Calculate the result of multiplying the secret number by 2048.
-        let result = self.seed * 2048;
+        let result = self.seed << 11;
         // Then, mix this result into the secret number.
         self.seed ^= result;
         // Finally, prune the secret number.
-        self.seed %= 16777216;
+        self.seed &= 0xFF_FFFF;
 
         Some(self.seed)
     }
