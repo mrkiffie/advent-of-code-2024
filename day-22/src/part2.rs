@@ -1,5 +1,4 @@
 use itertools::Itertools;
-use std::collections::{HashMap, HashSet};
 
 const INPUT: &str = include_str!("input.txt");
 
@@ -10,30 +9,35 @@ pub fn run() -> String {
 
 #[tracing::instrument(level = "trace", skip(input))]
 fn process(input: &str, count: usize) -> usize {
-    let mut map = HashMap::with_capacity(0xFFFF);
-    let mut seen = HashSet::with_capacity(2024);
+    let indices = 19 * 19 * 19 * 19;
+    let mut prices: Vec<u16> = vec![0; indices];
+    let mut seen: Vec<u8> = vec![0; indices];
     for seed in input.lines().map(|line| line.parse::<usize>().unwrap()) {
-        seen.clear();
+        seen.fill(0);
         for (key, value) in generate_secret(seed)
             // ones digit
             .map(|secret| secret % 10)
             .tuple_windows()
             // calculate price delta - shifted into the positive range
-            .map(|(a, b)| (b, 10 + b - a))
+            .map(|(a, b)| (b, 9 + b - a))
             .take(count)
             .tuple_windows()
-            // compress price deltas into a single u32
-            .map(|(a, b, c, d)| (((a.1 << 24) | (b.1 << 16) | (c.1 << 8) | d.1) as u32, d.0))
+            // compress price deltas into an index
+            .map(|((_, a), (_, b), (_, c), (price, d))| {
+                (
+                    ((a * 19 * 19 * 19) + (b * 19 * 19) + (c * 19) + d),
+                    price as u16,
+                )
+            })
         {
-            if seen.insert(key) {
-                map.entry(key)
-                    .and_modify(|previous| *previous += value)
-                    .or_insert(value);
+            if seen[key] == 0 {
+                seen[key] = 1;
+                prices[key] += value;
             }
         }
     }
 
-    let result = *map.values().max().unwrap();
+    let result = *prices.iter().max().unwrap() as usize;
     result
 }
 
