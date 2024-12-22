@@ -10,9 +10,10 @@ pub fn run() -> String {
 
 #[tracing::instrument(level = "trace", skip(input))]
 fn process(input: &str, count: usize) -> usize {
-    let mut map = HashMap::new();
+    let mut map = HashMap::with_capacity(0xFFFF);
+    let mut seen = HashSet::with_capacity(2024);
     for seed in input.lines().map(|line| line.parse::<usize>().unwrap()) {
-        let mut seen = HashSet::new();
+        seen.clear();
         for (key, value) in generate_secret(seed)
             // ones digit
             .map(|secret| secret % 10)
