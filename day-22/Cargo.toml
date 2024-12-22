@@ -8,6 +8,7 @@ rust-version = "1.83.0"
 
 [dependencies]
 divan = { workspace = true, optional = true }
+itertools = { workspace = true }
 tracing = { workspace = true }
 
 [features]
