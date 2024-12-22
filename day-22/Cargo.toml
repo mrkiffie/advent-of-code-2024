@@ -1,0 +1,18 @@
+[package]
+name = "day-22"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.83.0"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+divan = { workspace = true, optional = true }
+tracing = { workspace = true }
+
+[features]
+bench = ["dep:divan"]
+
+[[bench]]
+name = "benchmark"
+harness = false
