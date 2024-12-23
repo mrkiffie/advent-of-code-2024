@@ -125,6 +125,7 @@ dependencies = [
  "day-20",
  "day-21",
  "day-22",
+ "day-23",
  "dhat",
  "tracing",
  "tracing-subscriber",
@@ -2232,6 +2233,15 @@ dependencies = [
 
 [[package]]
 name = "day-22"
+version = "0.1.0"
+dependencies = [
+ "divan",
+ "itertools",
+ "tracing",
+]
+
+[[package]]
+name = "day-23"
 version = "0.1.0"
 dependencies = [
  "divan",
