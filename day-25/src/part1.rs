@@ -7,7 +7,50 @@ pub fn run() -> String {
 
 #[tracing::instrument(level = "trace", skip(input))]
 fn process(input: &str) -> usize {
-    input.parse().unwrap()
+    let (locks, keys) = parse(input);
+
+    let mut count = 0;
+
+    for lock in locks.iter() {
+        for key in keys.iter() {
+            if lock.iter().zip(key.iter()).all(|(l, k)| l + k < 6) {
+                count += 1;
+            }
+        }
+    }
+
+    count
+}
+
+type Lock = [u8; 5];
+type Key = [u8; 5];
+
+fn parse_item(input: &str) -> [u8; 5] {
+    input
+        .lines()
+        .skip(1)
+        .take(5)
+        .fold([0; 5], |mut item, line| {
+            for i in 0..5 {
+                if &line[i..i + 1] == "#" {
+                    item[i] += 1;
+                }
+            }
+            item
+        })
+}
+
+fn parse(input: &str) -> (Vec<Lock>, Vec<Key>) {
+    input
+        .split("\n\n")
+        .fold((Vec::new(), Vec::new()), |(mut locks, mut keys), chunk| {
+            if chunk.starts_with("#") {
+                locks.push(parse_item(chunk));
+            } else {
+                keys.push(parse_item(chunk));
+            }
+            (locks, keys)
+        })
 }
 
 #[cfg(test)]
@@ -16,8 +59,48 @@ mod tests {
 
     #[test]
     fn it_works() {
-        let result = process("0");
-        assert_eq!(result, 0);
+        let result = process(
+            "#####
+.####
+.####
+.####
+.#.#.
+.#...
+.....
+
+#####
+##.##
+.#.##
+...##
+...#.
+...#.
+.....
+
+.....
+#....
+#....
+#...#
+#.#.#
+#.###
+#####
+
+.....
+.....
+#.#..
+###..
+###.#
+###.#
+#####
+
+.....
+.....
+.....
+#....
+#.#..
+#.#.#
+#####",
+        );
+        assert_eq!(result, 3);
     }
 }
 
